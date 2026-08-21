@@ -1,5 +1,9 @@
 # RecycleFlow ERP — Sistema de Gestión Integral de Reciclaje y Packaging
 
+[![Demo en Vivo](https://img.shields.io/badge/Demo%20en%20Vivo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://recycleflow-erp-demo.vercel.app)
+[![React](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+
 Sistema ERP Full-Stack diseñado para la gestión y trazabilidad operativa en la industria del **reciclaje industrial y fabricación/distribución de packaging**. La plataforma centraliza el procesamiento de materias primas secundarias y la logística de productos terminados mediante un modelo de inventario híbrido.
 
 > [!IMPORTANT]
@@ -90,16 +94,11 @@ npm run dev
 ```
 Abre tu navegador en [http://localhost:5173](http://localhost:5173).
 
----
+## 🌐 Demo en Vivo
 
-## 🚀 Despliegue en Vercel con 1 Clic
+Puedes acceder a la versión desplegada y completamente interactiva aquí:
 
-El repositorio incluye la configuración de `vercel.json` para routing SPA automático:
-
-1. Sube este repositorio a tu cuenta de GitHub.
-2. Ingresa a [Vercel](https://vercel.com) ➔ **Add New Project** ➔ Selecciona el repositorio.
-3. Mantén los valores predeterminados (Vite Framework preset).
-4. Haz clic en **Deploy**. ¡Listo para usar en producción!
+👉 **[Probar Demo en Vivo en Vercel](https://recycleflow-erp-demo.vercel.app)** *(o la URL asignada a tu proyecto en Vercel)*
 
 ---
 
