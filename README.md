@@ -106,19 +106,22 @@ El repositorio incluye la configuración de `vercel.json` para routing SPA autom
 ## 📸 Capturas de Pantalla
 
 ### 1. Pantalla de Acceso & Selector de Roles
-<img width="1919" height="917" alt="Login & Acceso Rápido" src="https://github.com/user-attachments/assets/3f923a87-4427-4942-9b0c-74651df0ed00" />
+![Login & Acceso Rápido](./docs/screenshots/login.png)
 
 ### 2. Panel Principal (Dashboard con Métricas y KPIs)
-<img width="1904" height="916" alt="Dashboard KPI" src="https://github.com/user-attachments/assets/05cb15cd-f1da-4a66-8f6e-a4139c5eea8f" />
+![Dashboard KPI](./docs/screenshots/dashboard.png)
 
 ### 3. Módulo de Compras y Logística de Ingreso
-<img width="1919" height="920" alt="Gestión de Compras" src="https://github.com/user-attachments/assets/42568bfd-4154-4e08-a611-e065f58e3f6f" />
+![Gestión de Compras](./docs/screenshots/compras.png)
 
 ### 4. Módulo de Reportes Transaccionales
-<img width="1900" height="918" alt="Reportes Transaccionales" src="https://github.com/user-attachments/assets/822a8348-39df-448a-b365-02bcc2f97c25" />
+![Reportes Transaccionales](./docs/screenshots/reportes.png)
 
 ### 5. Registro y Pista de Auditoría
-<img width="1919" height="915" alt="Módulo de Auditoría" src="https://github.com/user-attachments/assets/6ca778da-bac2-42a8-99b6-ac827ef67c68" />
+![Módulo de Auditoría](./docs/screenshots/auditoria.png)
+
+### 6. Control de Acceso & Seguridad (Usuarios y Roles)
+![Control de Acceso y Seguridad](./docs/screenshots/seguridad.png)
 
 ---
 
