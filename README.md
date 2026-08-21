@@ -1,6 +1,6 @@
 # RecycleFlow ERP — Sistema de Gestión Integral de Reciclaje y Packaging
 
-[![Demo en Vivo](https://img.shields.io/badge/Demo%20en%20Vivo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://recycleflow-erp-demo.vercel.app)
+[![Demo en Vivo](https://img.shields.io/badge/Demo%20en%20Vivo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://recycleflow-erp-demo-web.vercel.app)
 [![React](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 
@@ -98,7 +98,7 @@ Abre tu navegador en [http://localhost:5173](http://localhost:5173).
 
 Puedes acceder a la versión desplegada y completamente interactiva aquí:
 
-👉 **[Probar Demo en Vivo en Vercel](https://recycleflow-erp-demo.vercel.app)** *(o la URL asignada a tu proyecto en Vercel)*
+👉 **[Probar Demo en Vivo en Vercel](https://recycleflow-erp-demo-web.vercel.app)**
 
 ---
 

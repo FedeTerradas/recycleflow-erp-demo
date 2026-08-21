@@ -180,33 +180,33 @@ export default function Sidebar({ open, mobileOpen, onCloseMobile, onToggle }) {
           "fixed md:static z-50 min-h-screen transition-all duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] border-r bg-white/70 backdrop-blur-2xl shadow-[4px_0_24px_rgba(0,0,0,0.02)] border-[var(--hp-slate-200)]/60",
           mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
           open
-            ? "md:w-[280px] md:pointer-events-auto"
+            ? "md:w-[285px] md:pointer-events-auto"
             : "md:w-0 md:border-0 md:pointer-events-none md:overflow-hidden"
         )}
       >
         {shouldRenderContent && (
-          <div className="w-[280px] h-full flex flex-col relative">
+          <div className="w-[285px] h-full flex flex-col relative">
             {/* Subtle mesh background */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[var(--hp-cyan-100)]/30 to-transparent rounded-full blur-[60px] pointer-events-none" />
 
             {/* Brand / close button */}
-            <div className="flex items-center justify-between px-4 pt-6 pb-4 mb-2 relative z-10">
+            <div className="flex items-center justify-between px-3.5 pt-5 pb-4 mb-2 relative z-10">
               <Link
                 to="/"
                 onClick={onCloseMobile}
-                className="select-none focus:outline-none focus-visible:ring-2 rounded-md flex items-center gap-2 group shrink-0"
+                className="select-none focus:outline-none rounded-md flex items-center gap-2 group min-w-0"
               >
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[var(--hp-cyan-400)] to-[var(--hp-navy-600)] flex items-center justify-center shadow-lg group-hover:shadow-[var(--hp-cyan-400)]/40 transition-shadow">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[var(--hp-cyan-400)] to-[var(--hp-navy-600)] flex items-center justify-center shadow-md group-hover:shadow-[var(--hp-cyan-400)]/40 transition-shadow shrink-0">
                   <div className="w-2.5 h-2.5 bg-white rounded-sm rotate-45 group-hover:rotate-90 transition-transform duration-500" />
                 </div>
-                <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '1.35rem', lineHeight: 1.1, color: 'var(--hp-navy-900)' }}>
+                <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '1.25rem', lineHeight: 1.1, color: 'var(--hp-navy-900)' }} className="truncate">
                   Recycle<span style={{ color: 'var(--hp-cyan-500)' }}>Flow</span>
                 </div>
               </Link>
 
               <HamburgerButton
                 onClick={onToggle}
-                className="hidden md:inline-flex opacity-70 hover:opacity-100 shrink-0"
+                className="hidden md:inline-flex opacity-70 hover:opacity-100 shrink-0 ml-1"
                 label={open ? "Contraer menú" : "Expandir menú"}
               />
             </div>
