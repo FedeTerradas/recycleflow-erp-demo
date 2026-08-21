@@ -8,6 +8,7 @@ import PrintButton from "../components/buttons/PrintButton";
 import MessageModal from "../components/modals/MessageModal";
 import { apiFetch } from "../lib/apiClient";
 import Modal from "../components/modals/Modals";
+import Logo from "../img/logo.svg";
 
 
 function genId() {

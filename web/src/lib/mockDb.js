@@ -708,9 +708,11 @@ class MockDatabase {
 
   loadData() {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        return JSON.parse(stored);
+      if (typeof localStorage !== "undefined") {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          return JSON.parse(stored);
+        }
       }
     } catch (e) {
       console.warn("[MockDB] Error cargando localStorage:", e);
@@ -722,7 +724,9 @@ class MockDatabase {
 
   saveData(d = this.data) {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+      }
     } catch (e) {
       console.error("[MockDB] Error guardando en localStorage:", e);
     }
@@ -742,7 +746,6 @@ class MockDatabase {
       .map((p) => {
         const cat = this.data.categorias.find((c) => c.id_categoria === p.id_categoria);
         const tipo = this.data.tipos_producto.find((t) => t.id_tipo_producto === p.id_tipo_producto);
-        const med = this.data.unidades.find((u) => u.simbolo === (tipo?.unidad_stock || "u"));
 
         return {
           id_producto: p.id_producto,
@@ -1035,7 +1038,10 @@ class MockDatabase {
 
   addAudit(modulo, accion, detalle) {
     const newId = Math.max(0, ...this.data.auditoria.map((a) => a.id)) + 1;
-    const user = localStorage.getItem("dn_user_name") || localStorage.getItem("dn_user") || "admin@gmail.com";
+    const user =
+      (typeof localStorage !== "undefined" &&
+        (localStorage.getItem("dn_user_name") || localStorage.getItem("dn_user"))) ||
+      "admin@gmail.com";
     this.data.auditoria.unshift({
       id: newId,
       modulo,

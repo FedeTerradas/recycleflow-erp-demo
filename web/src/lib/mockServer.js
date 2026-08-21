@@ -1,7 +1,7 @@
 // web/src/lib/mockServer.js
 // Router local que intercepta peticiones API y responde con mockDb
 
-import mockDb from "./mockDb";
+import mockDb from "./mockDb.js";
 
 function parseBody(body) {
   if (!body) return {};
