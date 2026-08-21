@@ -1,0 +1,386 @@
+-- ==========================================================
+-- 002_seed.sql
+-- Datos iniciales base del sistema Don Nildo
+-- ==========================================================
+--Prueba de interfaz Registrar Ventas
+-- ==============================
+-- 1️⃣ PRODUCTOS DE PRUEBA
+-- ==============================
+INSERT INTO productos (nombre, id_categoria, id_tipo_producto, id_medida, precio_unitario, estado)
+SELECT
+  'Caja Pritty 20x20x10',
+  (SELECT id_categoria FROM categoria WHERE nombre='Cajas'),
+  (SELECT id_tipo_producto FROM tipo_producto WHERE nombre='Producto terminado'),
+  (SELECT id_medida FROM medida WHERE nombre='Unidad'),
+  250.00,
+  TRUE
+WHERE NOT EXISTS (SELECT 1 FROM productos WHERE nombre='Caja Pritty 20x20x10');
+
+INSERT INTO productos (nombre, id_categoria, id_tipo_producto, id_medida, precio_unitario, estado)
+SELECT
+  'Plástico Stretch 500m',
+  (SELECT id_categoria FROM categoria WHERE nombre='Accesorios'),
+  (SELECT id_tipo_producto FROM tipo_producto WHERE nombre='Producto terminado'),
+  (SELECT id_medida FROM medida WHERE nombre='Kilogramo'),
+  1800.00,
+  TRUE
+WHERE NOT EXISTS (SELECT 1 FROM productos WHERE nombre='Plástico Stretch 500m');
+
+-- ==============================
+-- 2️VENTA DE PRUEBA MIXTA
+-- ==============================
+INSERT INTO venta (fecha, id_estado, total, observaciones)
+SELECT
+  CURRENT_DATE,
+  (SELECT id_estado FROM estado WHERE nombre='COMPLETADO'),
+  2050.00,
+  'MIXTA'
+WHERE NOT EXISTS (SELECT 1 FROM venta WHERE total=2050.00);
+
+-- ==============================
+-- 3️DETALLES DE LA VENTA
+-- ==============================
+INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario, subtotal)
+SELECT
+  (SELECT id_venta FROM venta WHERE total=2050.00),
+  (SELECT id_producto FROM productos WHERE nombre='Caja Pritty 20x20x10'),
+  10,  -- 10 unidades
+  250.00,
+  2500.00
+WHERE NOT EXISTS (SELECT 1 FROM detalle_venta WHERE subtotal=2500.00);
+
+INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario, subtotal)
+SELECT
+  (SELECT id_venta FROM venta WHERE total=2050.00),
+  (SELECT id_producto FROM productos WHERE nombre='Plástico Stretch 500m'),
+  5,   -- 5 kg
+  1800.00,
+  9000.00
+WHERE NOT EXISTS (SELECT 1 FROM detalle_venta WHERE subtotal=9000.00);
+
+-- ==========================================================
+-- FIN DEL SEED DE PRUEBA DE VENTAS
+-- ==========================================================
+
+
+
+-- ==============================
+-- 1. EXTENSIONES Y ROLES
+-- ==============================
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+INSERT INTO roles (nombre, descripcion)
+VALUES
+  ('ADMIN', 'Administrador del sistema'),
+  ('OPERADOR', 'Operador de ventas y stock')
+ON CONFLICT (nombre) DO NOTHING;
+
+-- ==============================
+-- 2. USUARIO ADMIN
+-- ==============================
+-- admin@local.com / admin123
+INSERT INTO usuarios (dni, nombre, hash_contrasena, mail, id_rol, estado)
+SELECT
+  '20000000',
+  'Administrador',
+  crypt('admin123', gen_salt('bf', 10)),
+  'admin@local.com',
+  (SELECT id_rol FROM roles WHERE nombre='ADMIN'),
+  'ACTIVO'
+WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE mail='admin@local.com');
+
+-- ==============================
+-- 3. ESTADOS
+-- ==============================
+INSERT INTO estado (nombre, descripcion)
+VALUES
+  ('ACTIVO', 'Registro activo en el sistema'),
+  ('INACTIVO', 'Registro deshabilitado'),
+  ('PENDIENTE', 'Pendiente de aprobación o entrega'),
+  ('COMPLETADO', 'Proceso finalizado correctamente'),
+  ('ANULADO', 'Registro cancelado o anulado')
+ON CONFLICT (nombre) DO NOTHING;
+
+-- ==============================
+-- 4. MEDIDAS
+-- ==============================
+INSERT INTO medida (nombre, simbolo)
+VALUES
+  ('Unidad', 'u'),
+  ('Kilogramo', 'kg'),
+  ('Litro', 'L'),
+  ('Metro', 'm')
+ON CONFLICT (nombre) DO NOTHING;
+
+-- ==============================
+-- 5. CATEGORÍAS
+-- ==============================
+INSERT INTO categoria (nombre, descripcion)
+VALUES
+  ('Cajas', 'Envases y cajas biodegradables'),
+  ('Papeles', 'Productos de papel kraft y derivados'),
+  ('Bolsas', 'Bolsas y envoltorios ecológicos'),
+  ('Accesorios', 'Complementos de embalaje y rotulación')
+ON CONFLICT (nombre) DO NOTHING;
+
+-- ==============================
+-- 6. TIPOS DE PRODUCTO
+-- ==============================
+INSERT INTO tipo_producto (nombre, descripcion)
+VALUES
+  ('Producto terminado', 'Producto final listo para la venta'),
+  ('Materia prima', 'Insumo utilizado en la producción'),
+  ('Componente', 'Elemento intermedio del proceso productivo')
+ON CONFLICT (nombre) DO NOTHING;
+
+-- ==============================
+-- 7. TIPOS DE MOVIMIENTO DE STOCK
+-- ==============================
+INSERT INTO tipo_movimiento (nombre, descripcion)
+VALUES
+  ('ENTRADA', 'Ingreso de stock por compra o devolución'),
+  ('SALIDA', 'Salida de stock por venta o merma'),
+  ('AJUSTE', 'Corrección manual de stock por control de inventario')
+ON CONFLICT (nombre) DO NOTHING;
+
+-- ==============================
+-- 8. TIPO DE TRANSACCIÓN (AUDITORÍA)
+-- ==============================
+INSERT INTO tipo_transaccion (nombre, descripcion)
+VALUES
+  ('INSERT', 'Inserción de nuevo registro'),
+  ('UPDATE', 'Modificación de registro existente'),
+  ('DELETE', 'Eliminación de registro existente')
+ON CONFLICT (nombre) DO NOTHING;
+
+-- ==============================
+-- 9. PRODUCTOS DE PRUEBA
+-- ==============================
+INSERT INTO productos (nombre, descripcion, precio_unitario, stock_actual, id_categoria, id_medida, id_tipo_producto, estado)
+SELECT
+  'Caja biodegradable 250ml',
+  'Caja fabricada con bagazo de caña de azúcar',
+  180.50,
+  100,
+  (SELECT id_categoria FROM categoria WHERE nombre='Cajas'),
+  (SELECT id_medida FROM medida WHERE nombre='Unidad'),
+  (SELECT id_tipo_producto FROM tipo_producto WHERE nombre='Producto terminado'),
+  'ACTIVO'
+WHERE NOT EXISTS (SELECT 1 FROM productos WHERE nombre='Caja biodegradable 250ml');
+
+INSERT INTO productos (nombre, descripcion, precio_unitario, stock_actual, id_categoria, id_medida, id_tipo_producto, estado)
+SELECT
+  'Bolsa ecológica mediana',
+  'Bolsa reciclable de papel kraft',
+  95.00,
+  200,
+  (SELECT id_categoria FROM categoria WHERE nombre='Bolsas'),
+  (SELECT id_medida FROM medida WHERE nombre='Unidad'),
+  (SELECT id_tipo_producto FROM tipo_producto WHERE nombre='Producto terminado'),
+  'ACTIVO'
+WHERE NOT EXISTS (SELECT 1 FROM productos WHERE nombre='Bolsa ecológica mediana');
+
+INSERT INTO productos (nombre, descripcion, precio_unitario, stock_actual, id_categoria, id_medida, id_tipo_producto, estado)
+SELECT
+  'Papel envoltorio kraft',
+  'Rollo de 50 metros de papel ecológico',
+  1200.00,
+  25,
+  (SELECT id_categoria FROM categoria WHERE nombre='Papeles'),
+  (SELECT id_medida FROM medida WHERE nombre='Metro'),
+  (SELECT id_tipo_producto FROM tipo_producto WHERE nombre='Materia prima'),
+  'ACTIVO'
+WHERE NOT EXISTS (SELECT 1 FROM productos WHERE nombre='Papel envoltorio kraft');
+
+-- ==============================
+-- 10. CLIENTES DE PRUEBA
+-- ==============================
+INSERT INTO clientes (nombre, telefono, mail, direccion)
+VALUES
+  ('Comercio Verde', '3815555555', 'contacto@comercioverde.com', 'Av. Sustentable 123'),
+  ('EcoStore', '3814444444', 'info@ecostore.com', 'Calle Reciclaje 456')
+ON CONFLICT (mail) DO NOTHING;
+
+
+
+-- ==============================
+-- 11. VENTAS DE PRUEBA
+-- ==============================
+INSERT INTO ventas (id_cliente, id_usuario, fecha, total, estado)
+SELECT
+  (SELECT id_cliente FROM clientes WHERE nombre='Comercio Verde'),
+  (SELECT id_usuario FROM usuarios WHERE mail='admin@local.com'),
+  CURRENT_DATE,
+  180.50,
+  'COMPLETADO'
+WHERE NOT EXISTS (SELECT 1 FROM ventas WHERE total=180.50);
+
+INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario, subtotal)
+SELECT
+  (SELECT id_venta FROM ventas LIMIT 1),
+  (SELECT id_producto FROM productos WHERE nombre='Caja biodegradable 250ml'),
+  1,
+  180.50,
+  180.50
+WHERE NOT EXISTS (SELECT 1 FROM detalle_venta WHERE subtotal=180.50);
+
+-- ==========================================================
+-- FIN DEL SEED
+-- ==========================================================
+-- ==========================================================
+
+
+
+-- ==========================================================
+-- 003_seed_compras.sql
+-- Datos de prueba para el módulo de COMPRAS — Don Nildo
+-- ==========================================================
+
+-- 14. COMPRAS DE PRUEBA (ORDEN_COMPRA + DETALLE + REMITOS)
+-- ==============================
+
+-- ORDEN DE COMPRA 1 — Cartón corrugado (10 kg a 250 = 2.500)
+INSERT INTO orden_compra (id_proveedor, id_tipo_transaccion, total, fecha, observaciones, estado)
+SELECT
+  (SELECT id_proveedor        FROM proveedores      WHERE nombre = 'Reciclados Norte S.A.'),
+  (SELECT id_tipo_transaccion FROM tipo_transaccion WHERE nombre = 'COMPRA'),
+  2500.00,
+  CURRENT_DATE - INTERVAL '7 days',
+  'Compra de cartón corrugado para stock',
+  'COMPLETADO'
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM orden_compra oc
+  JOIN proveedores p ON p.id_proveedor = oc.id_proveedor
+  WHERE p.nombre = 'Reciclados Norte S.A.' AND oc.total = 2500.00
+);
+
+INSERT INTO detalle_compra (id_compra, id_producto, cantidad, precio_unitario, subtotal)
+SELECT
+  oc.id_compra,
+  (SELECT id_producto FROM productos WHERE nombre = 'Cartón corrugado'),
+  10,
+  250.00,
+  2500.00
+FROM orden_compra oc
+JOIN proveedores p ON p.id_proveedor = oc.id_proveedor
+WHERE p.nombre = 'Reciclados Norte S.A.' AND oc.total = 2500.00
+  AND NOT EXISTS (
+    SELECT 1 FROM detalle_compra dc
+    WHERE dc.id_compra = oc.id_compra AND dc.subtotal = 2500.00
+  );
+
+INSERT INTO remitos (id_compra, fecha, proveedor, tipo_compra, producto, cantidad, importe, observaciones)
+SELECT
+  oc.id_compra,
+  oc.fecha,
+  p.nombre,
+  'COMPRA',
+  'Cartón corrugado',
+  10,
+  2500.00,
+  'Remito asociado a OC de cartón corrugado'
+FROM orden_compra oc
+JOIN proveedores p ON p.id_proveedor = oc.id_proveedor
+WHERE p.nombre = 'Reciclados Norte S.A.' AND oc.total = 2500.00
+  AND NOT EXISTS (SELECT 1 FROM remitos r WHERE r.id_compra = oc.id_compra);
+
+-- ORDEN DE COMPRA 2 — Caja 40x30 (20 u a 1.800 = 36.000)
+INSERT INTO orden_compra (id_proveedor, id_tipo_transaccion, total, fecha, observaciones, estado)
+SELECT
+  (SELECT id_proveedor        FROM proveedores      WHERE nombre = 'Plásticos del Sur'),
+  (SELECT id_tipo_transaccion FROM tipo_transaccion WHERE nombre = 'COMPRA'),
+  36000.00,
+  CURRENT_DATE - INTERVAL '5 days',
+  'Reposición de cajas 40x30',
+  'COMPLETADO'
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM orden_compra oc
+  JOIN proveedores p ON p.id_proveedor = oc.id_proveedor
+  WHERE p.nombre = 'Plásticos del Sur' AND oc.total = 36000.00
+);
+
+INSERT INTO detalle_compra (id_compra, id_producto, cantidad, precio_unitario, subtotal)
+SELECT
+  oc.id_compra,
+  (SELECT id_producto FROM productos WHERE nombre = 'Caja 40x30'),
+  20,
+  1800.00,
+  36000.00
+FROM orden_compra oc
+JOIN proveedores p ON p.id_proveedor = oc.id_proveedor
+WHERE p.nombre = 'Plásticos del Sur' AND oc.total = 36000.00
+  AND NOT EXISTS (
+    SELECT 1 FROM detalle_compra dc
+    WHERE dc.id_compra = oc.id_compra AND dc.subtotal = 36000.00
+  );
+
+
+
+INSERT INTO remitos (id_compra, fecha, proveedor, tipo_compra, producto, cantidad, importe, observaciones)
+SELECT
+  oc.id_compra,
+  oc.fecha,
+  p.nombre,
+  'COMPRA',
+  'Caja 40x30',
+  20,
+  36000.00,
+  'Remito OC cajas 40x30'
+FROM orden_compra oc
+JOIN proveedores p ON p.id_proveedor = oc.id_proveedor
+WHERE p.nombre = 'Plásticos del Sur' AND oc.total = 36000.00
+  AND NOT EXISTS (SELECT 1 FROM remitos r WHERE r.id_compra = oc.id_compra);
+
+-- ORDEN DE COMPRA 3 — Papel blanco (15 kg a 300 = 4.500)
+INSERT INTO orden_compra (id_proveedor, id_tipo_transaccion, total, fecha, observaciones, estado)
+SELECT
+  (SELECT id_proveedor        FROM proveedores      WHERE nombre = 'Vidrios Industriales'),
+  (SELECT id_tipo_transaccion FROM tipo_transaccion WHERE nombre = 'COMPRA'),
+  4500.00,
+  CURRENT_DATE - INTERVAL '3 days',
+  'Compra de papel blanco para producción',
+  'COMPLETADO'
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM orden_compra oc
+  JOIN proveedores p ON p.id_proveedor = oc.id_proveedor
+  WHERE p.nombre = 'Vidrios Industriales' AND oc.total = 4500.00
+);
+
+INSERT INTO detalle_compra (id_compra, id_producto, cantidad, precio_unitario, subtotal)
+SELECT
+  oc.id_compra,
+  (SELECT id_producto FROM productos WHERE nombre = 'Papel blanco'),
+  15,
+  300.00,
+  4500.00
+FROM orden_compra oc
+JOIN proveedores p ON p.id_proveedor = oc.id_proveedor
+WHERE p.nombre = 'Vidrios Industriales' AND oc.total = 4500.00
+  AND NOT EXISTS (
+    SELECT 1 FROM detalle_compra dc
+    WHERE dc.id_compra = oc.id_compra AND dc.subtotal = 4500.00
+  );
+
+INSERT INTO remitos (id_compra, fecha, proveedor, tipo_compra, producto, cantidad, importe, observaciones)
+SELECT
+  oc.id_compra,
+  oc.fecha,
+  p.nombre,
+  'COMPRA',
+  'Papel blanco',
+  15,
+  4500.00,
+  'Remito OC papel blanco'
+FROM orden_compra oc
+JOIN proveedores p ON p.id_proveedor = oc.id_proveedor
+WHERE p.nombre = 'Vidrios Industriales' AND oc.total = 4500.00
+  AND NOT EXISTS (SELECT 1 FROM remitos r WHERE r.id_compra = oc.id_compra);
+
+-- ==========================================================
+-- FIN DEL SEED
+-- ==========================================================
+
+COMMIT;

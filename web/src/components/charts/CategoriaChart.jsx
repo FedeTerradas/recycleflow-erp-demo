@@ -1,0 +1,142 @@
+import { useState, useEffect, useCallback } from "react";
+import api from "../../lib/apiClient";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from "recharts";
+
+export default function CategoriaChart() {
+  const [periodo, setPeriodo] = useState("meses");
+  const [origen, setOrigen] = useState("ventas");
+  const [data, setData] = useState({ chartData: [], tipos: [] });
+  const [loading, setLoading] = useState(false);
+
+
+  const formatLabel = (label, periodo) => {
+    if (periodo === "semanas") {
+      const parts = label.split("-");
+      const week = parts[1] || label;
+      return `Sem ${week}`;
+    }
+    return label;
+  };
+
+
+  const loadData = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const result = await api(
+        `/api/dashboard/categoria?periodo=${periodo}&origen=${origen}`
+      );
+
+      const rawData = result?.data || [];
+      const rawTipos = result?.tipos || [];
+
+      const sorted = rawData.sort((a, b) =>
+        a.label.localeCompare(b.label)
+      );
+
+      setData({ chartData: sorted, tipos: rawTipos });
+    } catch (err) {
+      console.error("Error cargando gráfico:", err);
+      setData({ chartData: [], tipos: [] });
+    }
+
+    setLoading(false);
+  }, [periodo, origen]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  return (
+    <div className="bg-white rounded-2xl border p-3 md:p-5 shadow-sm">
+      <h3 className="text-lg font-bold text-[#0b1a38] mb-4">
+        Montos Obtenidos Por Categoria
+      </h3>
+
+
+      <div className="flex gap-3 mb-8 flex-wrap">
+        <select
+          value={periodo}
+          onChange={(e) => setPeriodo(e.target.value)}
+          className="border rounded-md px-3 py-2 w-full md:w-auto"
+        >
+          <option value="dias">Últimos días</option>
+          <option value="semanas">Últimas semanas</option>
+          <option value="meses">Últimos meses</option>
+        </select>
+
+        <select
+          value={origen}
+          onChange={(e) => setOrigen(e.target.value)}
+          className="border rounded-md px-3 py-2 w-full md:w-auto"
+        >
+          <option value="ventas">Ventas</option>
+          <option value="compras">Compras</option>
+        </select>
+      </div>
+
+      {loading ? (
+        <p className="text-slate-500">Cargando...</p>
+      ) : !data.chartData || data.chartData.length === 0 ? (
+        <p className="text-slate-500">
+          No hay datos para los filtros seleccionados.
+        </p>
+      ) : (
+        <ResponsiveContainer width="100%" height={350}>
+          <BarChart
+            data={data.chartData}
+            margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+
+            <XAxis
+              dataKey="label"
+              tickFormatter={(label) => formatLabel(label, periodo)}
+            />
+
+            <YAxis
+              tickFormatter={(v) => v.toLocaleString("es-AR")}
+              width={70}
+              tickMargin={10}
+              label={{
+                value: "Monto ($)",
+                angle: 0,
+                position: "insideLeft",
+                dx: -20,
+                dy: -143,
+                style: { fill: "#155E3B", fontSize: 12, fontWeight: 600 }
+              }}
+            />
+
+            <Tooltip
+              formatter={(value, name, props) => {
+                const key = props.dataKey;
+                return [`$${Number(value).toLocaleString("es-AR")}`, key];
+              }}
+              labelFormatter={(label) => formatLabel(label, periodo)}
+            />
+            <Legend />
+
+            {data.tipos.map((tipo, idx) => (
+              <Bar 
+                key={tipo} 
+                dataKey={tipo} 
+                fill={`hsl(${(idx * 137.5) % 360}, 70%, 50%)`} 
+                name={tipo} 
+              />
+            ))}
+          </BarChart>
+        </ResponsiveContainer>
+      )}
+    </div>
+  );
+}

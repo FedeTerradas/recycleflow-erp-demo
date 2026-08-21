@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="navyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#0b1a38"/>
+    </linearGradient>
+    <linearGradient id="boxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#0284c7" flood-opacity="0.35"/>
+    </filter>
+    <filter id="shadowBox" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Background Aura -->
+  <circle cx="256" cy="256" r="230" fill="url(#navyGrad)" opacity="0.95"/>
+  <circle cx="256" cy="256" r="226" stroke="url(#cyanGrad)" stroke-width="6" opacity="0.4" stroke-dasharray="12 12"/>
+
+  <!-- Rotating Eco-Orbit Ribbon 1 (Top Right) -->
+  <path d="M 256 64 C 362 64 448 150 448 256 C 448 290 439 322 423 350 L 378 320 C 388 301 394 279 394 256 C 394 180 332 118 256 118 Z" fill="url(#cyanGrad)" filter="url(#glow)"/>
+  
+  <!-- Rotating Eco-Orbit Ribbon 2 (Bottom Left) -->
+  <path d="M 256 448 C 150 448 64 362 64 256 C 64 222 73 190 89 162 L 134 192 C 124 211 118 233 118 256 C 118 332 180 394 256 394 Z" fill="url(#emeraldGrad)" filter="url(#glow)"/>
+
+  <!-- Arrows Head on Ribbon -->
+  <polygon points="410,380 460,340 450,400" fill="#22d3ee"/>
+  <polygon points="102,132 52,172 62,112" fill="#34d399"/>
+
+  <!-- Central Isometric Packaging Box -->
+  <g transform="translate(256, 256)" filter="url(#shadowBox)">
+    <!-- Top Face -->
+    <path d="M 0 -85 L 75 -42 L 0 0 L -75 -42 Z" fill="#67e8f9"/>
+    <!-- Right Face -->
+    <path d="M 0 0 L 75 -42 L 75 55 L 0 98 Z" fill="url(#boxGrad)"/>
+    <!-- Left Face -->
+    <path d="M -75 -42 L 0 0 L 0 98 L -75 55 Z" fill="#0369a1"/>
+
+    <!-- Recycling Arrow Stamp on Top Face -->
+    <path d="M -15 -42 L 0 -52 L 15 -42 L 8 -42 L 8 -32 L -8 -32 L -8 -42 Z" fill="#0b1a38" opacity="0.75"/>
+    
+    <!-- Accent Line on Box -->
+    <line x1="0" y1="0" x2="0" y2="98" stroke="#38bdf8" stroke-width="2" opacity="0.6"/>
+  </g>
+
+  <!-- Orbit Particle Sparkles -->
+  <circle cx="390" cy="140" r="6" fill="#fff" opacity="0.9"/>
+  <circle cx="120" cy="370" r="5" fill="#34d399" opacity="0.8"/>
+  <circle cx="256" cy="36" r="7" fill="#67e8f9" opacity="0.9"/>
+</svg>

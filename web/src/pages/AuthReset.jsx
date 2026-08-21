@@ -1,0 +1,115 @@
+// web/src/pages/AuthReset.jsx
+import { useState, useEffect } from "react";
+import supa from "../lib/supabaseClient";
+
+export default function AuthReset() {
+  const [ready, setReady] = useState(false);
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const redirectTo = "/login?reset=ok";
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+
+    async function init() {
+      if (code) {
+        const { error } = await supa.auth.exchangeCodeForSession(code);
+        if (error) {
+          setError(error.message || "El enlace es inválido o ha expirado.");
+        } else {
+          window.history.replaceState({}, "", window.location.pathname);
+        }
+        setReady(true);
+        return;
+      }
+
+      const { data } = await supa.auth.getSession();
+      if (data?.session) {
+        setReady(true);
+      } else {
+        setError("El enlace de restablecimiento no es válido o ha expirado.");
+        setReady(true);
+      }
+    }
+
+    init();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setMessage(null);
+
+    const { error: updateError } = await supa.auth.updateUser({ password });
+
+    if (updateError) {
+      setLoading(false);
+      setError(updateError.message || "No se pudo actualizar la contraseña.");
+      return;
+    }
+
+    await supa.auth.signOut();
+
+    setLoading(false);
+    setMessage(
+      "¡Contraseña actualizada! Serás redirigido al inicio de sesión en un momento."
+    );
+    setTimeout(() => {
+      window.location.href = redirectTo;
+    }, 1500);
+  };
+
+  if (!ready) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-700">Cargando…</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+        <h1
+          className="text-2xl font-bold text-center mb-4 text-[#0b1a38]"
+          style={{ fontFamily: "Syne, sans-serif" }}
+        >
+          Restablecer contraseña
+        </h1>
+        {error && <p className="text-red-600 mb-4">{error}</p>}
+        {message && <p className="text-[#06b6d4] mb-4">{message}</p>}
+        {!message && (
+          <form onSubmit={handleSubmit}>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Nueva contraseña
+            </label>
+            <input
+              type="password"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="••••••••"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-2 px-4 text-white font-semibold rounded-lg transition-colors ${
+                loading
+                  ? "bg-[#0b1a38] opacity-70 cursor-not-allowed"
+                  : "bg-[#0b1a38] hover:bg-[#1e3a6e]"
+              }`}
+            >
+              {loading ? "Guardando…" : "Cambiar contraseña"}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
