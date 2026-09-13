@@ -1,0 +1,27 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    # Se ejecuta diariamente a las 07:00 UTC (evita la pausa tras 7 días de inactividad)
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    name: Ping Supabase Database
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Ping Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://bxdawszhsyoaobgcfuva.supabase.co' }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || 'sb_publishable_IujNdFxTmPcCruq0N3QnpA_Dr5O2T2U' }}
+        run: node scripts/keep-alive.mjs
